@@ -40,10 +40,19 @@ export default {
         async addProduct(root, data, { models }) {
             return models.Product.create(data, {
                 include: [models.ProductVariant]
+            }).then(product => {
+                return models.Image.findAll({
+                    where: {
+                        id: data.images
+                    }
+                }).then(attachImages => {
+                    product.setImages(attachImages);
+                    return product;
+                })
             })
         },
         async updateProduct(root, data, { models }) {
-            const {id, ProductVariants, ...otherData} = data;
+            const {id, ProductVariants, images, ...otherData} = data;
             return models.Product.findOne({
                 where: { id },
                 include: [models.ProductVariant]
@@ -67,7 +76,14 @@ export default {
                         product.createProductVariant(v);
                     }
                 })
-                return [1];
+                return models.Image.findAll({
+                    where: {
+                        id: images
+                    }
+                }).then(attachImages => {
+                    product.setImages(attachImages);
+                    return [1];
+                })
             });
         },
         async deleteProduct(root, { id }, { models }) {
@@ -113,7 +129,7 @@ export default {
                     }, (err, res) => {
                         if(err) reject(err);
                         else {
-                            const filename = 'v' + res.version + '/' + res.public_id + '.' + res.format;
+                            const filename = res.secure_url;
                             const img = models.Image.create({ filename })
                             resolve(img);
                         }

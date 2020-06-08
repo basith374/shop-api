@@ -97,8 +97,8 @@ export default gql`
         updateCategory(id: Int!, name: String!): [Int]
         deleteCategory(id: Int!): Boolean
 
-        addProduct(name: String!, description: String, tags: String, categoryId: Int!, active: Boolean, ProductVariants: [ProductVariantInput!]!): Product
-        updateProduct(id: Int!, name: String!, description: String, tags: String, categoryId: Int!, active: Boolean, ProductVariants: [ProductVariantInput!]!): [Int]
+        addProduct(name: String!, description: String, tags: String, categoryId: Int!, active: Boolean, ProductVariants: [ProductVariantInput!]!, images: [Int!]!): Product
+        updateProduct(id: Int!, name: String!, description: String, tags: String, categoryId: Int!, active: Boolean, ProductVariants: [ProductVariantInput!]!, images: [Int!]!): [Int]
         deleteProduct(id: Int!): Boolean
 
         addStore(name: String!, streetAddress: String, locality: String!, pincode: String, active: Boolean): Store
