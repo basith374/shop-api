@@ -1,8 +1,14 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const OrderItem = sequelize.define('OrderItem', {
-    orderId: DataTypes.INTEGER,
-    productVariantId: DataTypes.INTEGER,
+    OrderId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+    },
+    productVariantId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+    },
     name: DataTypes.STRING, // capture name
     price: DataTypes.STRING, // capture price
     qty: DataTypes.INTEGER,

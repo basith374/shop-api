@@ -30,6 +30,14 @@ export default {
         async images (root, args, { models }) {
             return models.Image.findAll()
         },
+        async pendingOrders (root, args, { models }) {
+            return models.Order.findAll({
+                where: {
+                    status: 0
+                },
+                include: models.OrderItem
+            })
+        }
     },
     Mutation: {
         async addCategory (root, { name }, { models }) {
@@ -39,7 +47,7 @@ export default {
         },
         async addProduct(root, data, { models }) {
             return models.Product.create(data, {
-                include: [models.ProductVariant]
+                include: models.ProductVariant
             }).then(product => {
                 return models.Image.findAll({
                     where: {
@@ -55,7 +63,7 @@ export default {
             const {id, ProductVariants, images, ...otherData} = data;
             return models.Product.findOne({
                 where: { id },
-                include: [models.ProductVariant]
+                include: models.ProductVariant
             }).then(product => {
                 let incomingIds = ProductVariants.map(v => v.id);
                 let removedIds = product.ProductVariants.filter(v => !incomingIds.includes(v.id)).map(v => v.id);
@@ -137,11 +145,39 @@ export default {
                 }).on('error', err => reject(err))
             });
         },
-        async deleteImage(root, { image }, { models }) {
-
+        async deleteImage(root, { id }, { models }) {
+            return models.Image.destroy({
+                where: { id }
+            })
         },
         async addOrder(root, data, { models }) {
-
+            let orderItemMap = _.keyBy(data.OrderItems, 'productVariantId')
+            return models.ProductVariant.findAll({
+                where: {
+                    id: data.OrderItems.map(pv => pv.productVariantId)
+                },
+                include: models.Product
+            }).then(variants => {
+                let orderTotal = 0;
+                const items = variants.map(pv => {
+                    let qty = orderItemMap[pv.id].qty;
+                    let price = qty * pv.price;
+                    orderTotal += price;
+                    return {
+                        productVariantId: pv.id,
+                        name: pv.name + ' ' + pv.Product.name,
+                        qty,
+                        price
+                    }
+                });
+                return models.Order.create({
+                    ...data,
+                    total: orderTotal,
+                    OrderItems: items,
+                }, {
+                    include: models.OrderItem
+                })
+            })
         },
         async updateOrder(root, data, { models }) {
 
@@ -175,7 +211,7 @@ export default {
         async category (product) {
             return product.getCategory()
         },
-        async productVariants (product) {
+        async variants (product) {
             return product.getProductVariants()
         },
         async images (product) {
@@ -196,7 +232,10 @@ export default {
         },
     },
     Order: {
-        async orderItems (order) {
+        async customer (order) {
+            return order.getCustomer()
+        },
+        async items (order) {
             return order.getOrderItems()
         },
         async address (order) {

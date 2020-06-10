@@ -13,7 +13,7 @@ export default gql`
         tags: String
         category: Category!,
         active: Boolean!
-        productVariants: [ProductVariant!]!
+        variants: [ProductVariant!]!
         images: [Image]!
     }
     type ProductVariant {
@@ -53,7 +53,8 @@ export default gql`
         customer: Customer!
         address: Address! # not a snapshot, if user changes address, create new one
         status: Int!
-        orderItems: [OrderItem!]!
+        items: [OrderItem!]!
+        createdAt: String!
     }
     type OrderItem {
         name: String!
@@ -91,14 +92,15 @@ export default gql`
         customers: [Customer!]!
         orders: [Order!]!
         images: [Image!]!
+        pendingOrders: [Order!]!
     }
     type Mutation {
         addCategory(name: String!): Category
         updateCategory(id: Int!, name: String!): [Int]
         deleteCategory(id: Int!): Boolean
 
-        addProduct(name: String!, description: String, tags: String, categoryId: Int!, active: Boolean, ProductVariants: [ProductVariantInput!]!, images: [Int!]!): Product
-        updateProduct(id: Int!, name: String!, description: String, tags: String, categoryId: Int!, active: Boolean, ProductVariants: [ProductVariantInput!]!, images: [Int!]!): [Int]
+        addProduct(name: String!, description: String, tags: String, CategoryId: Int!, active: Boolean, ProductVariants: [ProductVariantInput!]!, images: [Int!]!): Product
+        updateProduct(id: Int!, name: String!, description: String, tags: String, CategoryId: Int!, active: Boolean, ProductVariants: [ProductVariantInput!]!, images: [Int!]!): [Int]
         deleteProduct(id: Int!): Boolean
 
         addStore(name: String!, streetAddress: String, locality: String!, pincode: String, active: Boolean): Store
@@ -108,8 +110,8 @@ export default gql`
         uploadImage(image: Upload!): Image!
         deleteImage(id: Int!): Boolean
 
-        addOrder(customerId: Int!, addressId: Int!, deliveryCharge: Float!, OrderItems: [OrderItemInput!]!): Order
-        updateOrder(id: Int!, customerId: Int!, addressId: Int!, deliveryCharge: Float!, OrderItems: [OrderItemInput!]!): [Int]
+        addOrder(CustomerId: Int!, AddressId: Int!, deliveryCharge: Float!, OrderItems: [OrderItemInput!]!): Order
+        updateOrder(id: Int!, CustomerId: Int!, AddressId: Int!, deliveryCharge: Float!, OrderItems: [OrderItemInput!]!): [Int]
         updateOrderStatus(id: Int!, status: Int!): [Int]
         deleteOrder(id: Int!): Boolean
 

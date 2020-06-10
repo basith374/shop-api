@@ -1,9 +1,8 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Order = sequelize.define('Order', {
-    total: DataTypes.DOUBLE,
-    customerId: DataTypes.INTEGER,
-    addressId: DataTypes.INTEGER,
+    CustomerId: DataTypes.INTEGER,
+    AddressId: DataTypes.INTEGER,
     deliveryCharge: DataTypes.DOUBLE,
     total: DataTypes.DOUBLE,
     status: DataTypes.INTEGER,

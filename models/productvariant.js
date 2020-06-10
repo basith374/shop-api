@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const ProductVariant = sequelize.define('ProductVariant', {
-    productId: DataTypes.INTEGER,
+    ProductId: DataTypes.INTEGER,
     name: DataTypes.STRING,
     price: DataTypes.DOUBLE,
     purchasePrice: DataTypes.DOUBLE,
@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   ProductVariant.associate = function(models) {
     // associations can be defined here
+    ProductVariant.belongsTo(models.Product);
   };
   return ProductVariant;
 };

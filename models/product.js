@@ -5,13 +5,13 @@ module.exports = (sequelize, DataTypes) => {
     description: DataTypes.STRING,
     tags: DataTypes.STRING,
     active: DataTypes.BOOLEAN,
-    categoryId: DataTypes.INTEGER,
+    CategoryId: DataTypes.INTEGER,
   }, {});
   Product.associate = function(models) {
     // associations can be defined here
-    Product.hasMany(models.ProductVariant, { foreignKey: 'productId', onDelete: 'CASCADE' });
+    Product.hasMany(models.ProductVariant, { onDelete: 'CASCADE' });
     Product.belongsToMany(models.Image, { through: 'ProductImages' })
-    Product.belongsTo(models.Category, { foreignKey: 'categoryId' });
+    Product.belongsTo(models.Category);
   };
   return Product;
 };
