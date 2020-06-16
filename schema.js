@@ -95,6 +95,8 @@ export default gql`
         pendingOrders: [Order!]!
     }
     type Mutation {
+        login(name: String!, email: String!, token: String!): String
+
         addCategory(name: String!): Category
         updateCategory(id: Int!, name: String!): [Int]
         deleteCategory(id: Int!): Boolean

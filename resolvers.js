@@ -1,5 +1,12 @@
+import jwt from 'jsonwebtoken';
 import _ from 'lodash';
 import cloudinary from 'cloudinary';
+import { OAuth2Client } from 'google-auth-library';
+import { JWT_SECRET } from '.';
+
+// google sign on
+const CLIENT_ID = '';
+const client = new OAuth2Client(CLIENT_ID);
 
 export default {
     Query: {
@@ -40,6 +47,25 @@ export default {
         }
     },
     Mutation: {
+        async login(root, { email, name, token }, { models }) {
+            const ticket = await client.verifyIdToken({
+                idToken: token,
+                audience: CLIENT_ID,
+            })
+            // const payload = ticket.getPayload();
+            // const userid = payload['sub'];
+            let user = await models.User.findOne({ email })
+            const authenticateUser = (user) => {
+                let token = jwt.sign({ id: user.id, email, name, roles: user.roles }, JWT_SECRET, {
+                    expiresIn: '7d'
+                })
+                return token
+            }
+            if(!user) {
+                user = await models.User.create({ email, name, roles: 'admin' })
+            }
+            return authenticateUser(user);
+        },
         async addCategory (root, { name }, { models }) {
             return models.Category.create({
                 name,
