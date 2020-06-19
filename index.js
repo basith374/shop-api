@@ -37,4 +37,4 @@ const server = new ApolloServer({
 
 server
 	.listen({ port: process.env.PORT || 4000 })
-	.then(({ url }) => console.log('Server is running on localhost:4000'))
+	.then(({ port }) => console.log('Server is running on ' + port))
