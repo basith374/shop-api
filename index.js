@@ -4,14 +4,15 @@ import resolvers from './resolvers';
 import models from './models';
 import cloudinary from 'cloudinary';
 import jwt from 'jsonwebtoken';
+require('dotenv').config()
 
 cloudinary.config({
-	cloud_name: '',
-	api_key: '',
-	api_secret: ''
+	cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+	api_key: process.env.CLOUDINARY_API_KEY,
+	api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const JWT_SECRET = '';
+export const JWT_SECRET = process.env.JWT_SECRET;
 
 const getUser = (token) => {
 	try {
