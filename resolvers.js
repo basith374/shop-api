@@ -5,7 +5,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { JWT_SECRET } from '.';
 
 // google sign on
-const CLIENT_ID = '';
+const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const client = new OAuth2Client(CLIENT_ID);
 
 export default {
