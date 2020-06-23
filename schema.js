@@ -81,18 +81,25 @@ export default gql`
         customer: Customer!
         orders: [Order!]!
     }
+    type SearchResult {
+        type: String!
+        id: Int!
+        name: String!
+        image: Image
+    }
     type Query {
         categories: [Category!]!
         category(id: Int!): Category
-        products: [Product!]!
+        products(str: String): [Product!]!
         product(id: Int!): Product
         store(id: Int!): Store
         stores: [Store!]!
         customer(id: Int!): Customer
-        customers: [Customer!]!
+        customers(str: String): [Customer!]!
         orders: [Order!]!
         images: [Image!]!
         pendingOrders: [Order!]!
+        search(str: String): [SearchResult]
     }
     type Mutation {
         login(name: String!, email: String!, token: String!): String

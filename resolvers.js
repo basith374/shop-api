@@ -3,6 +3,7 @@ import _ from 'lodash';
 import cloudinary from 'cloudinary';
 import { OAuth2Client } from 'google-auth-library';
 import { JWT_SECRET } from '.';
+import { Op } from 'sequelize';
 
 // google sign on
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -10,14 +11,18 @@ const client = new OAuth2Client(CLIENT_ID);
 
 export default {
     Query: {
-        async categories (root, args, { models }) {
-            return models.Category.findAll()
+        async categories (root, { str }, { models }) {
+            let params = {}
+            if(str) params.where = { name: { [Op.like]: '%' + str + '%' } }
+            return models.Category.findAll(params)
         },
         async category (root, { id }, { models }) {
             return models.Category.findByPk(id)
         },
-        async products (root, args, { models }) {
-            return models.Product.findAll()
+        async products (root, { str }, { models }) {
+            let params = {}
+            if(str) params.where = { name: { [Op.like]: '%' + str + '%' } }
+            return models.Product.findAll(params)
         },
         async product (root, { id }, { models }) {
             return models.Product.findByPk(id)
@@ -43,6 +48,45 @@ export default {
                     status: 0
                 },
                 include: models.OrderItem
+            })
+        },
+        async search (root, { str }, { models }) {
+            return Promise.all([
+                models.Product.findAll({
+                    where: {
+                        name: { [Op.like]: '%' + str + '%' }
+                    },
+                    include: models.Image
+                }),
+                models.Category.findAll({
+                    where: {
+                        name: { [Op.like]: '%' + str + '%' }
+                    },
+                    include: models.Image
+                })
+            ]).then(result => {
+                return [
+                    ...result[0].map(i => {
+                        const { id, name } = i;
+                        const images = i.getImages();
+                        return {
+                            type: 'product',
+                            id,
+                            name,
+                            image: images[0]
+                        }
+                    }),
+                    ...result[1].map(i => {
+                        const { id, name } = i;
+                        const image = i.getImage();
+                        return {
+                            type: 'category',
+                            id,
+                            name,
+                            image
+                        }
+                    }),
+                ]
             })
         }
     },
