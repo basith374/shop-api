@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Product.associate = function(models) {
     // associations can be defined here
-    Product.hasMany(models.ProductVariant, { onDelete: 'CASCADE' });
+    Product.hasMany(models.ProductVariant);
     Product.belongsToMany(models.Image, { through: 'ProductImages' })
     Product.belongsTo(models.Category);
   };

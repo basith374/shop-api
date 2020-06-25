@@ -37,6 +37,17 @@ module.exports = {
       'https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/apples.jpg',
       'https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/orange.jpg',
       'https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/watermelon.jpg',
+      'https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/fish.jpg',
+      'https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/poultry.jpg',
+      'https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/chocolates.jpg',
+      'https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/fruits.jpg',
+      'https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/dry-fruits.jpg',
+      'https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/dairy.jpg',
+      'https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/vegetables.jpg',
+      'https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/desserts.jpg',
+      'https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/meat.jpg',
+      'https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/milma.jpg',
+      'https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/eggs.jpg',
     ]
     return Promise.all(
       images.map(i => Image.create({ filename: i }))
@@ -44,12 +55,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    /*
-      Add reverting commands here.
-      Return a promise to correctly handle asynchronicity.
-
-      Example:
-      return queryInterface.bulkDelete('People', null, {});
-    */
+    return queryInterface.bulkDelete('Images', null, {});
   }
 };

@@ -16,8 +16,10 @@ export default {
             if(str) params.where = { name: { [Op.like]: '%' + str + '%' } }
             return models.Category.findAll(params)
         },
-        async category (root, { id }, { models }) {
-            return models.Category.findByPk(id)
+        async category (root, { name }, { models }) {
+            return models.Category.findOne({
+                where: { name }
+            })
         },
         async products (root, { str }, { models }) {
             let params = {}
@@ -66,31 +68,44 @@ export default {
                 })
             ]).then(result => {
                 return [
-                    ...result[0].map(i => {
+                    ...result[0].map(async i => {
                         const { id, name } = i;
-                        const images = i.getImages();
+                        const images = await i.getImages();
                         return {
                             type: 'product',
                             id,
                             name,
-                            image: images[0]
+                            image: images[0].filename
                         }
                     }),
-                    ...result[1].map(i => {
+                    ...result[1].map(async i => {
                         const { id, name } = i;
-                        const image = i.getImage();
+                        const image = await i.getImage();
                         return {
                             type: 'category',
                             id,
                             name,
-                            image
+                            image: image.filename
                         }
                     }),
                 ]
             })
-        }
+        },
+        async setting (root, { key }, { models }) {
+            return models.Setting.findOne({
+                where: { key }
+            }).then(setting => _.get(setting, 'value', ''))
+        },
     },
     Mutation: {
+        async updateSetting (root, { key, value }, { models }) {
+            return models.Setting.findOne({
+                where: { key }
+            }).then(setting => {
+                if(!setting) return models.Setting.create({ key, value }).then(rsp => true)
+                else return setting.update({ value }).then(rsp => true)
+            })
+        },
         async login(root, { email, name, token }, { models }) {
             const ticket = await client.verifyIdToken({
                 idToken: token,
@@ -291,7 +306,10 @@ export default {
     Category: {
         async products (category) {
             return category.getProducts()
-        }
+        },
+        async image (category) {
+            return category.getImage()
+        },
     },
     Customer: {
         async orders (customer) {

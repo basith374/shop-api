@@ -5,6 +5,7 @@ export default gql`
         id: Int!
         name: String!
         products: [Product!]!
+        image: Image!
     }
     type Product {
         id: Int!
@@ -85,11 +86,11 @@ export default gql`
         type: String!
         id: Int!
         name: String!
-        image: Image
+        image: String!
     }
     type Query {
         categories: [Category!]!
-        category(id: Int!): Category
+        category(name: String!): Category
         products(str: String): [Product!]!
         product(id: Int!): Product
         store(id: Int!): Store
@@ -100,6 +101,7 @@ export default gql`
         images: [Image!]!
         pendingOrders: [Order!]!
         search(str: String): [SearchResult]
+        setting(key: String): String
     }
     type Mutation {
         login(name: String!, email: String!, token: String!): String
@@ -131,5 +133,7 @@ export default gql`
         addCustomer(name: String!): Customer
         updateCustomer(id: Int!, name: String!, active: Boolean!): [Int]
         deleteCustomer(id: Int!): Boolean
+
+        updateSetting(key: String, value: String): Boolean
     }
 `

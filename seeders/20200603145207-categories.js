@@ -1,44 +1,39 @@
 'use strict';
-const { Category } = require('../models');
+const { Op } = require('sequelize');
+const { Category, Image } = require('../models');
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    /*
-      Add altering commands here.
-      Return a promise to correctly handle asynchronicity.
-
-      Example:
-      return queryInterface.bulkInsert('People', [{
-        name: 'John Doe',
-        isBetaMember: false
-      }], {});
-    */
-    return Promise.all([
-      Category.create({
-        name: 'Fish',
-      }),
-      Category.create({
-        name: 'Dairy',
-      }),
-      Category.create({
-        name: 'Meat',
-      }),
-      Category.create({
-        name: 'Vegetables',
-      }),
-      Category.create({
-        name: 'Fruits',
-      }),
-      Category.create({
-        name: 'Cooking',
-      }),
-      Category.create({
-        name: 'Poultry',
-      }),
-      Category.create({
-        name: 'Electronics',
-      }),
-    ])
+    const items = [
+      ['Fish', 'fish'],
+      ['Dairy', 'dairy'],
+      ['Meat', 'meat'],
+      ['Vegetables', 'vegetables'],
+      ['Cooking', 'sugar'],
+      ['Poultry', 'poultry'],
+      ['Cakes', 'butter-scotch'],
+      ['Snacks', 'shawarma'],
+      ['Foods', 'unnakaya'],
+      ['Desserts', 'desserts'],
+      ['Home Essentials', 'lifebuoy'],
+      ['Personal care', 'colgate'],
+      ['Cleaning', 'tide'],
+      ['Chocolates', 'chocolates'],
+      ['Dry fruits & Nuts', 'dry-fruits'],
+      ['Fruits', 'fruits'],
+    ]
+    return Promise.all(items.map(async i => {
+      let image = await Image.findOne({
+        where: {
+          filename: { [Op.like]: '%' + i[1] + '%' }
+        }
+      })
+      if(!image) return console.log('image not found:', i[1])
+      return Category.create({
+        name: i[0],
+        ImageId: image.id
+      })
+    }))
   },
 
   down: (queryInterface, Sequelize) => {
