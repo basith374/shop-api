@@ -65,7 +65,7 @@ export default gql`
         order: Order!
     }
     input OrderItemInput {
-        productVariantId: Int!
+        id: Int!
         qty: Float!
     }
     type Image {
@@ -74,6 +74,7 @@ export default gql`
     }
     type Address {
         id: Int!
+        name: String
         streetAddress: String!
         landmark: String!
         locality: String!
@@ -81,6 +82,7 @@ export default gql`
         type: String! # home or office
         customer: Customer!
         orders: [Order!]!
+        phoneno: String
     }
     type SearchResult {
         type: String!
@@ -97,14 +99,18 @@ export default gql`
         stores: [Store!]!
         customer(id: Int!): Customer
         customers(str: String): [Customer!]!
-        orders: [Order!]!
-        images: [Image!]!
-        pendingOrders: [Order!]!
+        orders(status: Int): [Order!]!
+        images(str: String): [Image!]!
         search(str: String): [SearchResult]
         setting(key: String): String
+        addresses: [Address!]!
+    }
+    type Subscription {
+        orderAdded: Order
     }
     type Mutation {
         login(name: String!, email: String!, token: String!): String
+        customerLogin(name: String!, email: String!, token: String!): String
 
         addCategory(name: String!): Category
         updateCategory(id: Int!, name: String!): [Int]
@@ -121,13 +127,13 @@ export default gql`
         uploadImage(image: Upload!): Image!
         deleteImage(id: Int!): Boolean
 
-        addOrder(CustomerId: Int!, AddressId: Int!, deliveryCharge: Float!, OrderItems: [OrderItemInput!]!): Order
+        addOrder(CustomerId: Int, AddressId: Int!, deliveryCharge: Float!, OrderItems: [OrderItemInput!]!): Order
         updateOrder(id: Int!, CustomerId: Int!, AddressId: Int!, deliveryCharge: Float!, OrderItems: [OrderItemInput!]!): [Int]
         updateOrderStatus(id: Int!, status: Int!): [Int]
         deleteOrder(id: Int!): Boolean
 
-        addAddress(streetAddress: String!, landmark: String!, locality: String!, pincode: String!, type: String!): Address
-        updateAddress(id: Int!, streetAddress: String!, landmark: String!, locality: String!, pincode: String!, type: String!): [Int]
+        addAddress(name: String!, streetAddress: String!, landmark: String!, locality: String!, pincode: String!, type: String!): Address
+        updateAddress(id: Int!, name: String!, streetAddress: String!, landmark: String!, locality: String!, pincode: String!, type: String!): [Int]
         deleteAddress(id: Int!): Boolean
 
         addCustomer(name: String!): Customer

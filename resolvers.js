@@ -4,6 +4,7 @@ import cloudinary from 'cloudinary';
 import { OAuth2Client } from 'google-auth-library';
 import { JWT_SECRET } from '.';
 import { Op } from 'sequelize';
+import { pubsub } from './index';
 
 // google sign on
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -38,19 +39,22 @@ export default {
         async customers (root, args, { models }) {
             return models.Customer.findAll()
         },
-        async orders (root, args, { models }) {
-            return models.Order.findAll()
+        async orders (root, { status }, { models, user }) {
+            if(user.type === 'customer') {
+                return models.Customer.findOne({
+                    where: { id: user.id }
+                }).then(customer => {
+                    return customer.getOrders();
+                })
+            }
+            const params = { where: {}, include: models.OrderItem }
+            if(status) params.where.status = status;
+            return models.Order.findAll(params)
         },
-        async images (root, args, { models }) {
-            return models.Image.findAll()
-        },
-        async pendingOrders (root, args, { models }) {
-            return models.Order.findAll({
-                where: {
-                    status: 0
-                },
-                include: models.OrderItem
-            })
+        async images (root, { str }, { models }) {
+            const params = { where: {} }
+            if(str) params.where.filename = { [Op.like]: '%' + str + '%' }
+            return models.Image.findAll(params)
         },
         async search (root, { str }, { models }) {
             return Promise.all([
@@ -96,6 +100,24 @@ export default {
                 where: { key }
             }).then(setting => _.get(setting, 'value', ''))
         },
+        async addresses (root, { token }, { models, user }) {
+            if(user.type === 'customer') {
+                return models.Customer.findOne({
+                    where: { id: user.id }
+                }, {
+                    include: models.Address
+                }).then(customer => {
+                    return customer.getAddresses();
+                })
+            } else {
+                return models.Address.findAll()
+            }
+        },
+    },
+    Subscription: {
+        orderAdded: {
+            subscribe: () => pubsub.asyncIterator(['ORDER_ADDED'])
+        }
     },
     Mutation: {
         async updateSetting (root, { key, value }, { models }) {
@@ -115,13 +137,27 @@ export default {
             // const userid = payload['sub'];
             let user = await models.User.findOne({ email })
             const authenticateUser = (user) => {
-                let token = jwt.sign({ id: user.id, email, name, roles: user.roles }, JWT_SECRET, {
+                let token = jwt.sign({ id: user.id, email, name, roles: user.roles, type: 'user' }, JWT_SECRET, {
                     expiresIn: '7d'
                 })
                 return token
             }
+            return authenticateUser(user);
+        },
+        async customerLogin(root, { email, name, token }, { models }) {
+            await client.verifyIdToken({
+                idToken: token,
+                audience: CLIENT_ID,
+            })
+            let user = await models.Customer.findOne({ email })
+            const authenticateUser = (user) => {
+                let token = jwt.sign({ id: user.id, email, name, type: 'customer' }, JWT_SECRET, {
+                    expiresIn: '14d'
+                })
+                return token
+            }
             if(!user) {
-                user = await models.User.create({ email, name, roles: 'admin' })
+                user = await models.Customer.create({ email, name })
             }
             return authenticateUser(user);
         },
@@ -235,11 +271,13 @@ export default {
                 where: { id }
             })
         },
-        async addOrder(root, data, { models }) {
-            let orderItemMap = _.keyBy(data.OrderItems, 'productVariantId')
+        async addOrder(root, data, { models, user }) {
+            let { CustomerId } = data;
+            if(user.type === 'customer') CustomerId = user.id;
+            let orderItemMap = _.keyBy(data.OrderItems, 'id')
             return models.ProductVariant.findAll({
                 where: {
-                    id: data.OrderItems.map(pv => pv.productVariantId)
+                    id: data.OrderItems.map(pv => pv.id)
                 },
                 include: models.Product
             }).then(variants => {
@@ -257,11 +295,16 @@ export default {
                 });
                 return models.Order.create({
                     ...data,
+                    CustomerId,
                     total: orderTotal,
                     OrderItems: items,
+                    status: 0,
                 }, {
                     include: models.OrderItem
-                })
+                }).then(order => {
+                    pubsub.publish('ORDER_ADDED', { orderAdded: order })
+                    return order;
+                });
             })
         },
         async updateOrder(root, data, { models }) {
@@ -273,8 +316,10 @@ export default {
         async deleteOrder(root, { id }, { models }) {
 
         },
-        async addAddress(root, data, { models }) {
-
+        async addAddress(root, data, { models, user }) {
+            return models.Customer.findOne({ id: user.id }).then(customer => {
+                return customer.createAddress(data);
+            })
         },
         async updateAddress(root, data, { models }) {
 

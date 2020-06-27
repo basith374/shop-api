@@ -1,5 +1,4 @@
-import { ApolloServer, AuthenticationError } from 'apollo-server';
-import typeDefs from './schema';
+import { ApolloServer, AuthenticationError, PubSub } from 'apollo-server';
 import resolvers from './resolvers';
 import models from './models';
 import cloudinary from 'cloudinary';
@@ -17,15 +16,20 @@ export const JWT_SECRET = process.env.JWT_SECRET;
 const getUser = (token) => {
 	try {
 		return jwt.verify(token, JWT_SECRET);
-	} catch(err) {
+	} catch (err) {
 	}
 	return ''
 }
 
+export const pubsub = new PubSub();
+
 const server = new ApolloServer({
 	typeDefs,
 	resolvers,
-	context: ({ req }) => {
+	context: ({ req, connection }) => {
+		if(connection) {
+			return connection.context;
+		} else {
 		let ctx = { models }
 		if(req.body.operationName !== 'LoginMutation') {
 			const token = req.headers.authorization || '';
@@ -33,9 +37,13 @@ const server = new ApolloServer({
 			if (!ctx.user) throw new AuthenticationError('you must be logged in')
 		}
 		return ctx
+		}
 	},
 })
 
 server
 	.listen({ port: process.env.PORT || 4000 })
-	.then(({ port }) => console.log('Server is running on ' + port))
+	.then(({ url, subscriptionsUrl }) => {
+		console.log(`🚀 Server ready at ${url}`);
+		console.log(`🚀 Subscriptions ready at ${subscriptionsUrl}`);
+	})

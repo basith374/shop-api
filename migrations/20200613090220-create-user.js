@@ -18,11 +18,13 @@ module.exports = {
       },
       roles: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        defaultValue: ''
       },
       active: {
         type: Sequelize.BOOLEAN,
-        defaultValue: false
+        allowNull: false,
+        defaultValue: true
       },
       createdAt: {
         allowNull: false,

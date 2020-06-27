@@ -6,15 +6,28 @@ module.exports = {
     return Promise.all([
       Customer.create({
         name: 'Bazi',
-        active: true,
+        email: 'basith374@gmail.com',
         Addresses: [
           {
-            streetAddress: 'Kenz',
+            name: 'Default',
+            houseName: 'Kenz',
+            streetAddress: 'Valakathan vayal road',
             locality: 'Dharmadam',
             pincode: '670106',
             landmark: 'Near coronation school',
             type: 'home',
-          }
+            phoneno: '9995243664',
+          },
+          {
+            name: 'Default',
+            houseName: 'Sana',
+            streetAddress: 'National Highway',
+            locality: 'Dharmadam',
+            pincode: '670106',
+            landmark: 'Behind post office',
+            type: 'home',
+            phoneno: '9995243664',
+          },
         ]
       }, {
         include: Address
