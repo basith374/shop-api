@@ -1,4 +1,5 @@
 import { ApolloServer, AuthenticationError, PubSub } from 'apollo-server';
+import typeDefs from './schema';
 import resolvers from './resolvers';
 import models from './models';
 import cloudinary from 'cloudinary';
@@ -30,13 +31,13 @@ const server = new ApolloServer({
 		if(connection) {
 			return connection.context;
 		} else {
-		let ctx = { models }
-		if(req.body.operationName !== 'LoginMutation') {
-			const token = req.headers.authorization || '';
-			ctx.user = token ? getUser(token) : '';
-			if (!ctx.user) throw new AuthenticationError('you must be logged in')
-		}
-		return ctx
+			let ctx = { models }
+			if(req.body.operationName !== 'LoginMutation') {
+				const token = req.headers.authorization || '';
+				ctx.user = token ? getUser(token) : '';
+				if (!ctx.user) throw new AuthenticationError('you must be logged in')
+			}
+			return ctx
 		}
 	},
 })

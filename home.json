@@ -1,0 +1,266 @@
+[
+    {
+        "type": "text",
+        "text": "Delivery from 9:00 to 7:00\nAnywhere in Thalassery"
+    },
+    {
+        "type": "banner",
+        "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/desserts.jpg",
+        "link": {
+            "type": "category",
+            "id": "Desserts"
+        }
+    },
+    {
+        "type": "bannerslide",
+        "items": [
+            {
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/vegetables.jpeg",
+                "link": {
+                    "type": "category",
+                    "id": "Vegetables"
+                }
+            },
+            {
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/meat.jpg",
+                "link": {
+                    "type": "category",
+                    "id": "Meat"
+                }
+            },
+            {
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/fish.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "fish"
+                }
+            }
+        ]
+    },
+    {
+        "type": "cardslide",
+        "name": "Food",
+        "items": [
+            {
+                "link": {
+                    "type": "search",
+                    "word": "pizza"
+                },
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/pizza.jpg",
+                "name": "Pizza"
+            },
+            {
+                "link": {
+                    "type": "search",
+                    "word": "burger"
+                },
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/burger.jpg",
+                "name": "Burger"
+            },
+            {
+                "link": {
+                    "type": "search",
+                    "word": "shawarma"
+                },
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/shawarma.jpeg",
+                "name": "Shawarma"
+            }
+        ]
+    },
+    {
+        "type": "cardslide",
+        "name": "Desserts",
+        "items": [
+            {
+                "name": "Unnakaya",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/unnakaya.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "unna"
+                }
+            },
+            {
+                "name": "Halwa",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/Gajar-Ka-Halwa.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "halwa"
+                }
+            }
+        ]
+    },
+    {
+        "type": "cardslide",
+        "name": "Cakes",
+        "items": [
+            {
+                "name": "Chocolate",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/butter-scotch.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "chocolate"
+                }
+            },
+            {
+                "name": "Butterscotch",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/butter-scotch2.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "butter scotch"
+                }
+            },
+            {
+                "name": "Almond",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/almond-cake.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "almond"
+                }
+            },
+            {
+                "name": "Red Velvet",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/red-velvet.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "red velvet"
+                }
+            }
+        ]
+    },
+    {
+        "type": "cardslide",
+        "name": "Cooking",
+        "items": [
+            {
+                "name": "Sugar",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/sugar.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "sugar"
+                }
+            },
+            {
+                "name": "Pepper",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/black-pepper.png",
+                "link": {
+                    "type": "search",
+                    "word": "pepper"
+                }
+            },
+            {
+                "name": "Atta",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/atta.jpeg",
+                "link": {
+                    "type": "search",
+                    "word": "aatta"
+                }
+            },
+            {
+                "name": "Spices",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/eastern-sambar.png",
+                "link": {
+                    "type": "search",
+                    "word": "sambar"
+                }
+            }
+        ]
+    },
+    {
+        "type": "cardslide",
+        "name": "Home Essentials",
+        "items": [
+            {
+                "name": "Toothpaste",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/colgate.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "toothpaste"
+                }
+            },
+            {
+                "name": "Detergents",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/tide.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "tide"
+                }
+            },
+            {
+                "name": "Soap",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/lifebuoy.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "soap"
+                }
+            }
+        ]
+    },
+    {
+        "type": "cardslide",
+        "name": "Vegetables",
+        "items": [
+            {
+                "name": "Potatoes",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/potatoes.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "potato"
+                }
+            },
+            {
+                "name": "Gourds",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/gourd.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "gourd"
+                }
+            },
+            {
+                "name": "Tomato",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/tomato.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "tomato"
+                }
+            },
+            {
+                "name": "Garlic",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/garlic.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "garlic"
+                }
+            }
+        ]
+    },
+    {
+        "type": "cardslide",
+        "name": "Fruits",
+        "items": [
+            {
+                "name": "Apples",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/apples.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "apple"
+                }
+            },
+            {
+                "name": "Oranges",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/orange.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "orange"
+                }
+            },
+            {
+                "name": "Watermelon",
+                "image": "https://res.cloudinary.com/bluroe-labs/image/upload/shop-images/watermelon.jpg",
+                "link": {
+                    "type": "search",
+                    "word": "watermelon"
+                }
+            }
+        ]
+    }
+]

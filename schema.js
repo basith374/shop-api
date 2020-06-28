@@ -43,9 +43,17 @@ export default gql`
     type Customer {
         id: Int!
         name: String!
+        email: String!
         active: Boolean!
         orders: [Order!]!
         addresses: [Address!]!
+    }
+    type User {
+        id: Int!
+        name: String!
+        email: String!
+        roles: String
+        active: Boolean
     }
     type Order {
         id: Int!
@@ -104,6 +112,8 @@ export default gql`
         search(str: String): [SearchResult]
         setting(key: String): String
         addresses: [Address!]!
+        users: [User!]!
+        user: User!
     }
     type Subscription {
         orderAdded: Order
@@ -141,5 +151,9 @@ export default gql`
         deleteCustomer(id: Int!): Boolean
 
         updateSetting(key: String, value: String): Boolean
+
+        addUser(name: String!, email: String!, roles: String!): User
+        updateUser(id: Int!, name: String!, email: String!, roles: String!, active: Boolean!): User
+        deleteUser(id: Int!): Boolean
     }
 `

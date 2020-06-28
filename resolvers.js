@@ -113,6 +113,12 @@ export default {
                 return models.Address.findAll()
             }
         },
+        async users (root, args, { models, user }) {
+            return models.User.findAll()
+        },
+        async user (root, args, { models, user }) {
+            return models.User.findByPk(user.id);
+        },
     },
     Subscription: {
         orderAdded: {
@@ -120,6 +126,29 @@ export default {
         }
     },
     Mutation: {
+        async addUser (root, args, { models }) {
+            const { email } = args;
+            return models.User.findOne({
+                where: { email }
+            }).then(user => {
+                if(user) {
+                    throw new Error('user already exists')
+                } else {
+                    return models.User.create(args);
+                }
+            })
+        },
+        async updateUser (root, { id, ...args}, { models }) {
+            return models.User.findByPk(id).then(user => {
+                return user.update(args);
+            })
+        },
+        async deleteUser (root, { id }, { models, user }) {
+            if(user.roles === 'admin') {
+                return models.User.destroy({ where: { id } });
+            }
+            throw new Error('no permissions');
+        },
         async updateSetting (root, { key, value }, { models }) {
             return models.Setting.findOne({
                 where: { key }
@@ -128,28 +157,29 @@ export default {
                 else return setting.update({ value }).then(rsp => true)
             })
         },
-        async login(root, { email, name, token }, { models }) {
+        async login(root, { token }, { models }) {
             const ticket = await client.verifyIdToken({
                 idToken: token,
                 audience: CLIENT_ID,
             })
-            // const payload = ticket.getPayload();
-            // const userid = payload['sub'];
-            let user = await models.User.findOne({ email })
+            const payload = ticket.getPayload();
+            const { email, name } = payload;
+            let user = await models.User.findOne({ where: { email } })
             const authenticateUser = (user) => {
                 let token = jwt.sign({ id: user.id, email, name, roles: user.roles, type: 'user' }, JWT_SECRET, {
                     expiresIn: '7d'
                 })
-                return token
+                return token;
             }
-            return authenticateUser(user);
+            if(user) return authenticateUser(user);
+            throw new Error('Access denied')
         },
         async customerLogin(root, { email, name, token }, { models }) {
             await client.verifyIdToken({
                 idToken: token,
                 audience: CLIENT_ID,
             })
-            let user = await models.Customer.findOne({ email })
+            let user = await models.Customer.findOne({ where:  { email } })
             const authenticateUser = (user) => {
                 let token = jwt.sign({ id: user.id, email, name, type: 'customer' }, JWT_SECRET, {
                     expiresIn: '14d'
@@ -185,32 +215,32 @@ export default {
             return models.Product.findOne({
                 where: { id },
                 include: models.ProductVariant
-            }).then(product => {
+            }).then(async product => {
                 let incomingIds = ProductVariants.map(v => v.id);
                 let removedIds = product.ProductVariants.filter(v => !incomingIds.includes(v.id)).map(v => v.id);
                 // remove associations
-                models.ProductVariant.destroy({
+                await models.ProductVariant.destroy({
                     where: {
                         id: removedIds
                     }
                 })
                 // create/update associations
-                ProductVariants.forEach(v => {
+                ProductVariants.forEach(async v => {
                     if('id' in v) {
                         let {id, ...data} = v;
-                        models.ProductVariant.update(data, {
+                        await models.ProductVariant.update(data, {
                             where: { id }
                         })
                     } else {
-                        product.createProductVariant(v);
+                        await product.createProductVariant(v);
                     }
                 })
                 return models.Image.findAll({
                     where: {
                         id: images
                     }
-                }).then(attachImages => {
-                    product.setImages(attachImages);
+                }).then(async attachImages => {
+                    await product.setImages(attachImages);
                     return [1];
                 })
             });
