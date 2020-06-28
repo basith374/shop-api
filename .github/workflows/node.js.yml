@@ -21,7 +21,7 @@ jobs:
     - name: Install dependencies
       run: npm i
     - name: Deploy to production
-      if: github.ref == 'refs/head/master'
+      if: ${{ github.ref == 'refs/head/master' }}
       uses: easingthemes/ssh-deploy@v2.1.1
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
@@ -30,7 +30,7 @@ jobs:
         SOURCE: ''
         TARGET: ${{ secrets.REMOTE_TARGET }}
     - name: Deploy to staging
-      if: github.ref == 'refs/head/staging'
+      if: ${{ github.ref == 'refs/head/staging' }}
       uses: easingthemes/ssh-deploy@v2.1.1
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
