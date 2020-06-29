@@ -9,6 +9,7 @@ on:
 
 jobs:
   build-prod:
+    if: ${{ github.ref == 'refs/heads/master' }}
 
     runs-on: ubuntu-latest
 
@@ -21,7 +22,6 @@ jobs:
     - name: Install dependencies
       run: npm i
     - name: Deploy to production
-      if: ${{ github.ref == 'refs/heads/master' }}
       uses: easingthemes/ssh-deploy@v2.1.1
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
@@ -31,6 +31,7 @@ jobs:
         TARGET: ${{ secrets.REMOTE_TARGET }}
 
   build-staging:
+    if: ${{ github.ref == 'refs/heads/staging' }}
     
     runs-on: ubuntu-latest
 
@@ -43,7 +44,6 @@ jobs:
     - name: Install dependencies
       run: npm i
     - name: Deploy to staging
-      if: ${{ github.ref == 'refs/heads/staging' }}
       uses: easingthemes/ssh-deploy@v2.1.1
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
