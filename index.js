@@ -31,13 +31,9 @@ const server = new ApolloServer({
 		if(connection) {
 			return connection.context;
 		} else {
-			let ctx = { models }
-			if(req.body.operationName !== 'LoginMutation') {
-				const token = req.headers.authorization || '';
-				ctx.user = token ? getUser(token) : '';
-				if (!ctx.user) throw new AuthenticationError('you must be logged in')
-			}
-			return ctx
+			const token = req.headers.authorization || '';
+			const user = getUser(token);
+			return { models, user }
 		}
 	},
 })
