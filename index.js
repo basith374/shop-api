@@ -19,7 +19,6 @@ const getUser = (token) => {
 		return jwt.verify(token, JWT_SECRET);
 	} catch (err) {
 	}
-	return ''
 }
 
 export const pubsub = new PubSub();

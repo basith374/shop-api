@@ -302,6 +302,7 @@ export default {
             })
         },
         async addOrder(root, data, { models, user }) {
+            if(!user) return;
             let { CustomerId } = data;
             if(user.type === 'customer') CustomerId = user.id;
             let orderItemMap = _.keyBy(data.OrderItems, 'id')
