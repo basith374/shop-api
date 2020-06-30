@@ -100,7 +100,8 @@ export default {
                 where: { key }
             }).then(setting => _.get(setting, 'value', ''))
         },
-        async addresses (root, { token }, { models, user }) {
+        async addresses (root, args, { models, user }) {
+            if(!user) return null;
             if(user.type === 'customer') {
                 return models.Customer.findOne({
                     where: { id: user.id }
@@ -302,7 +303,7 @@ export default {
             })
         },
         async addOrder(root, data, { models, user }) {
-            if(!user) return;
+            if(!user) return null;
             let { CustomerId } = data;
             if(user.type === 'customer') CustomerId = user.id;
             let orderItemMap = _.keyBy(data.OrderItems, 'id')
@@ -310,20 +311,25 @@ export default {
                 where: {
                     id: data.OrderItems.map(pv => pv.id)
                 },
-                include: models.Product
-            }).then(variants => {
+                include: {
+                    model: models.Product,
+                    include: models.Image
+                }
+            }).then(async variants => {
                 let orderTotal = 0;
-                const items = variants.map(pv => {
+                const items = await Promise.all(variants.map(async pv => {
                     let qty = orderItemMap[pv.id].qty;
                     let price = qty * pv.price;
+                    let images = await pv.Product.getImages();
                     orderTotal += price;
                     return {
                         productVariantId: pv.id,
                         name: pv.name + ' ' + pv.Product.name,
                         qty,
-                        price
+                        price,
+                        ImageId: images[0].id,
                     }
-                });
+                }));
                 return models.Order.create({
                     ...data,
                     CustomerId,
@@ -355,8 +361,12 @@ export default {
         async updateAddress(root, data, { models }) {
 
         },
-        async deleteAddress(root, { id }, { models }) {
-
+        async deleteAddress(root, { id }, { models, user }) {
+            if(!user) return null;
+            const address = await models.Address.findByPk(id);
+            if(address && address.CustomerId === user.id) {
+                return await address.destroy();
+            }
         },
         async addCustomer(root, data, { models }) {
 
@@ -412,6 +422,9 @@ export default {
         },
         async productVariant (orderItem) {
             return orderItem.getProductVariant()
+        },
+        async image (orderItem) {
+            return orderItem.getImage()
         },
     },
     Address: {

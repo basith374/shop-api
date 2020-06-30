@@ -9,7 +9,7 @@ module.exports = {
         email: 'basith374@gmail.com',
         Addresses: [
           {
-            name: 'Default',
+            // name: 'Default',
             houseName: 'Kenz',
             streetAddress: 'Valakathan vayal road',
             locality: 'Dharmadam',
@@ -19,7 +19,7 @@ module.exports = {
             phoneno: '9995243664',
           },
           {
-            name: 'Default',
+            // name: 'Default',
             houseName: 'Sana',
             streetAddress: 'National Highway',
             locality: 'Dharmadam',

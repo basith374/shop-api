@@ -69,6 +69,8 @@ export default gql`
         name: String!
         price: Float!
         qty: Float!
+        image: Image
+        productVariantId: Int!
         productVariant: ProductVariant # might get deleted
         order: Order!
     }
@@ -83,6 +85,7 @@ export default gql`
     type Address {
         id: Int!
         name: String
+        houseName: String!
         streetAddress: String!
         landmark: String!
         locality: String!
@@ -142,9 +145,9 @@ export default gql`
         updateOrderStatus(id: Int!, status: Int!): [Int]
         deleteOrder(id: Int!): Boolean
 
-        addAddress(name: String!, streetAddress: String!, landmark: String!, locality: String!, pincode: String!, type: String!): Address
-        updateAddress(id: Int!, name: String!, streetAddress: String!, landmark: String!, locality: String!, pincode: String!, type: String!): [Int]
-        deleteAddress(id: Int!): Boolean
+        addAddress(houseName: String!, streetAddress: String!, landmark: String!, locality: String!, pincode: String!, type: String!): Address
+        updateAddress(id: Int!, houseName: String!, streetAddress: String!, landmark: String!, locality: String!, pincode: String!, type: String!): [Int]
+        deleteAddress(id: Int!): Address
 
         addCustomer(name: String!): Customer
         updateCustomer(id: Int!, name: String!, active: Boolean!): [Int]

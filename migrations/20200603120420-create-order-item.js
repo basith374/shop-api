@@ -27,8 +27,11 @@ module.exports = {
         allowNull: false,
         defaultValue: 0
       },
+      ImageId: {
+        type: Sequelize.INTEGER
+      },
       storeId: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
