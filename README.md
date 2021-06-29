@@ -9,4 +9,4 @@ DB_PASS=passwd
 DB_DATB=shopdb
 ```
 4. `npx sequelize db:migrate`
-5. `npx sequelize db:migrate`
+5. `npx sequelize db:seed` (optional)
