@@ -11,4 +11,4 @@ GOOGLE_CLIENT_ID=secret
 JWT_SECRET=secret
 ```
 4. `npx sequelize db:migrate`
-5. `npx sequelize db:migrate`
+5. `npx sequelize db:seed` (optional)
